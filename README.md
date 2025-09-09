@@ -6,8 +6,27 @@ This repository contains two demos on how to use Crossplane to provision and man
 
 *   A Kubernetes cluster
 *   `kubectl` installed
-*   Crossplane installed in your cluster
 *   Your UpCloud API credentials
+
+### Installing Crossplane v2.0
+
+1.  Add the Crossplane Helm repository:
+    ```
+    helm repo add crossplane-stable https://charts.crossplane.io/stable
+    ```
+2.  Update your Helm repository:
+    ```
+    helm repo update
+    ```
+3.  Install the Crossplane Helm chart:
+    ```
+    helm install crossplane --namespace crossplane-system --create-namespace crossplane-stable/crossplane
+    ```
+4.  Verify the installation:
+    ```
+    kubectl get pods -n crossplane-system
+    ```
+
 
 ## Demo 1: Managed Resources
 
@@ -18,7 +37,7 @@ This demo shows how to deploy UpCloud resources directly using Crossplane manage
 The files for this demo are in the `managed-resources-demo` directory.
 
 *   `provider.yaml`: Installs the UpCloud provider.
-*   `providerconfig.yaml`: Configures the UpCloud provider with your API credentials. **Remember to replace the placeholder credentials in this file.**
+*   `providerconfig.example.yaml`: An example of how to configure the UpCloud provider with your API credentials.
 *   `network.yaml`: Defines a network on UpCloud.
 *   `server.yaml`: Defines a server on UpCloud.
 
@@ -28,16 +47,20 @@ The files for this demo are in the `managed-resources-demo` directory.
     ```
     kubectl apply -f managed-resources-demo/provider.yaml
     ```
-2.  Update the `providerconfig.yaml` file with your UpCloud API credentials.
-3.  Apply the `providerconfig.yaml` file:
+2.  Create a `providerconfig.yaml` file by copying the example:
+    ```
+    cp managed-resources-demo/providerconfig.example.yaml managed-resources-demo/providerconfig.yaml
+    ```
+3.  Update the `managed-resources-demo/providerconfig.yaml` file with your UpCloud API credentials. This file is ignored by Git.
+4.  Apply the `providerconfig.yaml` file:
     ```
     kubectl apply -f managed-resources-demo/providerconfig.yaml
     ```
-4.  Apply the `network.yaml` file to create the network:
+5.  Apply the `network.yaml` file to create the network:
     ```
     kubectl apply -f managed-resources-demo/network.yaml
     ```
-5.  Apply the `server.yaml` file to create the server:
+6.  Apply the `server.yaml` file to create the server:
     ```
     kubectl apply -f managed-resources-demo/server.yaml
     ```
