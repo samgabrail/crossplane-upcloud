@@ -1,0 +1,21 @@
+apiVersion: server.upcloud.upbound.io/v1alpha1
+kind: Server
+metadata:
+  name: my-server
+spec:
+  forProvider:
+    hostname: my-server.local
+    zone: fi-hel1
+    networkInterface:
+      - type: public
+        ipAddressFamily: IPv4
+      - type: private
+        network: my-network
+    plan: 1xCPU-1GB
+    storageDevice:
+      - action: clone
+        size: 25
+        storage: 01000000-0000-4000-8000-000030200200
+        title: my-server-storage
+  providerConfigRef:
+    name: default

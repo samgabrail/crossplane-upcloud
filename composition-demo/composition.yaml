@@ -1,0 +1,56 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: upcloud-server-composition
+  labels:
+    provider: upcloud
+spec:
+  compositeTypeRef:
+    apiVersion: custom.upcloud.crossplane.io/v1alpha1
+    kind: CompositeUpCloudServer
+  resources:
+    - name: network
+      base:
+        apiVersion: network.upcloud.upbound.io/v1alpha1
+        kind: Network
+        metadata:
+          name: my-composed-network
+        spec:
+          forProvider:
+            ipNetwork:
+              address: 10.0.1.0/24
+              dhcp: true
+              family: IPv4
+            name: my-composed-network
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: "spec.zone"
+          toFieldPath: "spec.forProvider.zone"
+    - name: server
+      base:
+        apiVersion: server.upcloud.upbound.io/v1alpha1
+        kind: Server
+        metadata:
+          name: my-composed-server
+        spec:
+          forProvider:
+            hostname: my-composed-server.local
+            networkInterface:
+              - type: public
+                ipAddressFamily: IPv4
+              - type: private
+                network: my-composed-network
+            storageDevice:
+              - action: clone
+                storage: 01000000-0000-4000-8000-000030200200
+                title: my-composed-server-storage
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: "spec.plan"
+          toFieldPath: "spec.forProvider.plan"
+        - fromFieldPath: "spec.zone"
+          toFieldPath: "spec.forProvider.zone"
+        - fromFieldPath: "spec.storageSize"
+          toFieldPath: "spec.forProvider.storageDevice[0].size"

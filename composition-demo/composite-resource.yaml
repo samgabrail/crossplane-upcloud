@@ -1,0 +1,13 @@
+apiVersion: custom.upcloud.crossplane.io/v1alpha1
+kind: CompositeUpCloudServer
+metadata:
+  name: my-server
+  namespace: default
+spec:
+  compositionSelector:
+    matchLabels:
+      provider: upcloud
+  parameters:
+    plan: 1xCPU-2GB
+    zone: fi-hel2
+    storageSize: 50
